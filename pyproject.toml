@@ -1,0 +1,51 @@
+[tool.poetry]
+name = "python-template"
+version = "0.1.0"
+description = ""
+authors = ["Youngbeom Choi <helloybz@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+poethepoet = "*"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "*"
+mypy = "*"
+pylint = "*"
+pytest = "*"
+pytest-cov = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.poe.tasks]
+    [tool.poe.tasks.format]
+    help = "Run Ruff foramt"
+    cmd  = "ruff format ."
+
+    [tool.poe.tasks.format-check]
+    help = "Run Ruff formatter"
+    cmd  = "ruff format --check ."
+
+    [tool.poe.tasks.ruff-lint]
+    help = "lint check"
+    cmd  = "ruff check ./src"
+
+    [tool.poe.tasks.types]
+    help = "Run the type checker"
+    cmd  = "mypy src --ignore-missing-imports"
+
+    [tool.poe.tasks.lint]
+    help = "Run the linter"
+    cmd  = "pylint ./src"
+
+    [tool.poe.tasks.test]
+    help = "Run unit and feature tests"
+    cmd  = "pytest --cov=src tests/ --junitxml=build/xunit-result.xml --cov-report=xml:build/xunit-coverage.xml"
+
+    [tool.poe.tasks.check]
+    help     = "Run all checks on the code base"
+    sequence = ["format-check", "ruff-lint", "types", "lint", "test"]
