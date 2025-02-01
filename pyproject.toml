@@ -1,13 +1,18 @@
 [tool.poetry]
-name = "python-template"
+name = "mnist_classification"
+package-mode=false
 version = "0.1.0"
 description = ""
 authors = ["Youngbeom Choi <helloybz@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "~3.12"
 poethepoet = "*"
+lightning = "^2.5.0.post0"
+click = "^8.1.8"
+loguru = "^0.7.3"
+torchvision = "^0.21.0"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "*"
@@ -19,7 +24,6 @@ pytest-cov = "*"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
 
 [tool.poe.tasks]
     [tool.poe.tasks.format]
@@ -44,8 +48,33 @@ build-backend = "poetry.core.masonry.api"
 
     [tool.poe.tasks.test]
     help = "Run unit and feature tests"
-    cmd  = "pytest --cov=src tests/ --junitxml=build/xunit-result.xml --cov-report=xml:build/xunit-coverage.xml"
+    cmd  = "pytest --cov=src tests/ --junitxml=build/xunit-result.xml"
 
     [tool.poe.tasks.check]
     help     = "Run all checks on the code base"
     sequence = ["format-check", "ruff-lint", "types", "lint", "test"]
+
+    [tool.poe.tasks.web]
+    help  = "Run web app on local"
+    cmd   = "python src/main.py web run"
+    env = {PYTHONPATH="${PYTHONPATH}:/src"}
+
+[tool.coverage.run]
+branch = true
+omit = ["*/main.py", "*/command.py"]
+relative_files = true
+
+[tool.coverage.report]
+exclude_lines = [
+  "pragma: no cover",
+  "if __name__ == .__main__.:",
+  "class .*\\bProtocol\\):",
+  "@(abc\\.)?abstractmethod"
+]
+fail_under = 80
+show_missing = true
+
+[tool.mypy]
+strict = true
+incremental = false
+plugins = ["pydantic.mypy"]
