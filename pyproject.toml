@@ -59,6 +59,15 @@ build-backend = "poetry.core.masonry.api"
     cmd   = "python src/main.py web run"
     env = {PYTHONPATH="${PYTHONPATH}:/src"}
 
+    [tool.poe.tasks.clean]
+    help = "Remove generated files"
+    cmd  = """
+      rm -rf .coverage
+            .mypy_cache
+            .pytest_cache
+            ./**/__pycache__
+    """
+
 [tool.coverage.run]
 branch = true
 omit = ["*/main.py", "*/command.py"]
